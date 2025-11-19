@@ -63,7 +63,7 @@ export default function SearchStations() {
         {stations.length > 0 && (
           <ul className="space-y-4">
             {stations.map((stn) => (
-              <Link key={stn._id} href={`/station/${stn._id}`}>
+              <Link key={stn._id} href={`/location/${stn._id}`}>
                 <li className="p-5 bg-gray-50 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition cursor-pointer hover:scale-[1.02] text-black">
                   <p className="font-semibold text-black text-lg">{stn.village}</p>
                   <p className="text-black text-sm">

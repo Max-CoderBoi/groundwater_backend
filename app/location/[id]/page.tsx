@@ -30,14 +30,10 @@ export default function StationDetails() {
     district,
     block,
     village,
-    station_id,
-    latitude,
-    longitude,
-    elevation,
+    lat,
+    long,
     season,
-    river_basin,
-    is_active,
-    last_reported
+    location
   } = station;
 
   return (
@@ -55,39 +51,24 @@ export default function StationDetails() {
 
         <div className="bg-green-50 p-4 rounded-lg shadow-sm">
           <h3 className="font-semibold text-gray-800">Coordinates</h3>
-          <p>Lat: {latitude}</p>
-          <p>Lng: {longitude}</p>
+          <p>Lat: {lat ?? location?.coordinates[1]}</p>
+          <p>Lng: {long ?? location?.coordinates[0]}</p>
         </div>
 
-        <div className="bg-yellow-50 p-4 rounded-lg shadow-sm">
-          <h3 className="font-semibold text-gray-800">Elevation</h3>
-          <p>{elevation ?? "N/A"} meters</p>
+        <div className="bg-orange-50 p-4 rounded-lg shadow-sm col-span-2">
+          <h3 className="font-semibold text-gray-800">Season Data</h3>
+          {season ? (
+            <ul className="text-gray-700 text-sm mt-1 space-y-1">
+              {Object.entries(season).map(([month, value]) => (
+                <li key={month}>
+                  <span className="font-medium">{month.toUpperCase()}:</span> {value}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>N/A</p>
+          )}
         </div>
-
-        <div className="bg-purple-50 p-4 rounded-lg shadow-sm">
-          <h3 className="font-semibold text-gray-800">River Basin</h3>
-          <p>{river_basin ?? "Unknown"}</p>
-        </div>
-
-        <div className="bg-orange-50 p-4 rounded-lg shadow-sm">
-          <h3 className="font-semibold text-gray-800">Season</h3>
-          <p>{season ?? "N/A"}</p>
-        </div>
-
-        <div className="bg-red-50 p-4 rounded-lg shadow-sm">
-          <h3 className="font-semibold text-gray-800">Status</h3>
-          <p className={is_active ? "text-green-600 font-bold" : "text-red-600 font-bold"}>
-            {is_active ? "Active" : "Inactive"}
-          </p>
-        </div>
-      </div>
-
-      {/* Last Report */}
-      <div className="mt-8 bg-gray-50 p-5 rounded-lg shadow-sm border border-gray-200">
-        <h3 className="font-semibold text-gray-800">Last Reported</h3>
-        <p className="text-gray-700 mt-1">
-          {last_reported ? new Date(last_reported).toLocaleString() : "No data available"}
-        </p>
       </div>
 
       {/* Back Button */}
@@ -95,7 +76,7 @@ export default function StationDetails() {
         onClick={() => window.history.back()}
         className="mt-6 bg-gray-800 text-white px-5 py-3 rounded-lg hover:bg-gray-900 transition"
       >
-        ← Back to Nearest Stations
+        ← Back to Search
       </button>
     </div>
   );

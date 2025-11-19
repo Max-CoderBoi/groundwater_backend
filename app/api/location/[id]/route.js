@@ -1,28 +1,29 @@
 import { NextResponse } from "next/server";
+import connectDB from "@/lib/mongodb"; // your Mongoose connection
+import Station from "@/models/Station";
 import { ObjectId } from "mongodb";
-import clientPromise from "@/lib/mongodb"; 
 
-export async function GET(req, { params }) {
+export async function GET(req, context) {
   try {
-    const { id } = params;
+    await connectDB(); // connect to MongoDB via Mongoose
+
+    const { id } = await context.params; // unwrap params
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 
-    const client = await clientPromise;
-    const db = client.db("YOUR_DB_NAME"); 
-    const collection = db.collection("YOUR_COLLECTION_NAME");
+    const station = await Station.findById(id).select(
+      "state district block village location season"
+    );
 
-    const data = await collection.findOne({ _id: new ObjectId(id) });
-
-    if (!data) {
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (!station) {
+      return NextResponse.json({ error: "Station Not Found" }, { status: 404 });
     }
 
-    return NextResponse.json(data);
+    return NextResponse.json(station);
   } catch (err) {
-    console.error("API ERROR:", err);
+    console.error("Station API error:", err);
     return NextResponse.json({ error: "Server Error" }, { status: 500 });
   }
 }
